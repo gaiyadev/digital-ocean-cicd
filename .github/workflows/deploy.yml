@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Build and Deploy
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY  }}
           username: ${{ secrets.SERVER_USERNAME  }}
           script: |
-            cd path/to/your/digital-ocean-cicd
+            cd digital-ocean-cicd
             git pull origin main
             npm install
             pm2 restart src/app.js
