@@ -1,4 +1,4 @@
-name: Digital ocean Node.js CI
+name: Digital Ocean Node.js CI
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,19 +15,27 @@ jobs:
         node-version: [18.x]
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Debug SSH Key
+      run: |
+        echo "$SSH_PRIVATE_KEY"
 
     - name: Deploying to server
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+        echo "$SSH_PRIVATE_KEY" > /tmp/private_key
+        chmod 600 /tmp/private_key
+        scp -o StrictHostKeyChecking=no -i /tmp/private_key -r . ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }}:~/digital-ocean-cicd
+        ssh -o StrictHostKeyChecking=no -i /tmp/private_key ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd ~/digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
-
