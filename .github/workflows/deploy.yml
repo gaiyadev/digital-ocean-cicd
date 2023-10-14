@@ -24,3 +24,9 @@ jobs:
         cache: 'npm'
     - run: npm ci
 
+    - name: Deploy to server
+      run: |
+        ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
