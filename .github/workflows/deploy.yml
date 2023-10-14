@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Deploy NodeJS app
-        uses: appleboy/ssh-action@v0.1.2
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP  }}
           key: ${{ secrets.SSH_PRIVATE_KEY  }}
