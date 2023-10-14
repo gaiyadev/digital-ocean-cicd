@@ -1,34 +1,21 @@
-name: Digital ocean Node.js CI
+name: Build & Deploy
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-
-    - name: Deploying to server
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
-
+      - name: Deploy NodeJS app
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{ secrets.SERVER_IP  }}
+          key: ${{ secrets.SSH_PRIVATE_KEY  }}
+          username: ${{ secrets.SERVER_USERNAME  }}
+          script: |
+            cd path/to/your/digital-ocean-cicd
+            git pull origin main
+            npm install
+            pm2 restart src/app.js
