@@ -29,10 +29,5 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          # script: |
-          #     cd digital-ocean-cicd
-          #     git stash
-          #     git pull origin main
-          #     pm2 restart src/app.js
     
               
