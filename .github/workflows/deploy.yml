@@ -19,9 +19,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }} 
           key: ${{ secrets.SSH_PRIVATE_KEY }} 
           port: 22
-          script: whoami
-          # script: |
-          #   cd digital-ocean-cicd
-          #   git pull origin main
-          #   npm install
-          #   pm2 restart src/app.js
+          script: |
+            cd digital-ocean-cicd
+            git pull origin main
+            npm install
+            pm2 restart src/app.js
