@@ -21,7 +21,8 @@ jobs:
         run: |
           cd /home/runner/work/digital-ocean-cicd/digital-ocean-cicd
           npm install
-          npx pm2 restart /src/app.js
+          pwd
+          # npx pm2 restart src/app.js
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
