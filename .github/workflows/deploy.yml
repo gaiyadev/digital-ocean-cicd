@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          path: digital-ocean-cicd # Specify the path where the repository should be cloned/pulled
+          path: digital-ocean-cicd
 
       - name: Update repository or clone if not exists
         run: |
@@ -20,13 +20,12 @@ jobs:
             cd digital-ocean-cicd
             git pull origin main
           else
-            git clone https://github.com/gaiyadev/digital-ocean-cicd.git digital-ocean-cicd
+            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
             cd digital-ocean-cicd
-          fi
         working-directory: digital-ocean-cicd
 
       - name: Install dependencies and restart application
         run: |
           npm install
-          pm2 start src/app.js
+          npm src/app.js
         working-directory: digital-ocean-cicd
