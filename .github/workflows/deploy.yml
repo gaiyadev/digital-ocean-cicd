@@ -27,7 +27,7 @@ jobs:
           username: ${{secrets.SERVER_USERNAME}}
           key: ${{secrets.SSH_PRIVATE_KEY}}
           script: |
-            cd /path/to/your/remote/project/directory 
+            cd /home/runner/work/digital-ocean-cicd/digital-ocean-cicd/
             git pull origin main 
-            npm install # Install Node.js dependencies
+            npm install 
             pm2 restart src/app.js 
