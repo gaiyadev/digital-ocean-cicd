@@ -19,8 +19,10 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }} 
           key: ${{ secrets.SSH_PRIVATE_KEY }} 
           port: 22
-         script: |
-            mkdir tesdigital-ocean-cicdt 
-            cd digital-ocean-cicd 
-            git clone https://github.com/Mulubwa17/ci-cd-to-digitalocean-with-github-actions.git
-            echo 'Deployment successful to digital ocean' 
+          script: |
+                    mkdir digital-ocean-cicd
+                    cd digital-ocean-cicd
+                    git clone https://github.com/Mulubwa17/ci-cd-to-digitalocean-with-github-actions.git
+                    cd digital-ocean-cicd/digital-ocean-cicd
+                    npm install
+                    pm2 restart src/app.js
