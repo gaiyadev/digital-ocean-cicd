@@ -10,23 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install dependencies and Deploy to DigitalOcean
         run: |
-          npm install
-
-      - name: Deploy to DigitalOcean
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            mkdir digital-ocean-cicd 
-            cd digital-ocean-cicd 
-            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
-            cd digital-ocean-cicd 
-            pm2 restart src/app.js
-            echo 'Deployment successful to digital ocean' 
+         pwd
+         ls -R
+          # cd digital-ocean-cicd 
+          # git pull origin main        
+          # cd src  
+          # npm install
+          # pm2 restart app.js
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
