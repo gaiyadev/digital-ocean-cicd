@@ -6,29 +6,25 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install dependencies and Deploy to DigitalOcean
         run: |
-          npm install
+          # Clone the repository into the current working directory
+          git clone https://github.com/gaiyadev/digital-ocean-cicd.git .
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to DigitalOcean
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          # script: |
-          #   git stash
-          #   git pull origin main
-          #   npm install
-          #   pm2 restart /home/root/digital-ocean-cicd/src/app.js
+          # Navigate into the cloned directory
+          cd digital-ocean-cicd
+
+          # Install dependencies and restart the application
+          npm install
+          pm2 restart app.js  # Assuming you're using PM2 to manage your Node.js application
+
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
