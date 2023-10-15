@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Digital Ocean Node.js CI/CD
 
 on:
   push:
@@ -6,28 +6,30 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install dependencies and restart app
+      - name: Install dependencies
         run: |
-          cd ${{github.workspace}}
           npm install
-          npx pm2 restart src/app.js
-        env:
-          PM2_HOME: ${{github.workspace}}/.pm2
 
-      - name: SSH into theserver and deploy
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{secrets.SERVER_IP}}
-          username: ${{secrets.SERVER_USERNAME}}
-          key: ${{secrets.SSH_PRIVATE_KEY}}
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           script: |
-            cd /home/runner/work/digital-ocean-cicd/digital-ocean-cicd/
-            git pull origin main 
-            npm install 
-            pm2 restart src/app.js 
+            cd ${{github.workspace}}
+            git stash
+            git pull origin main
+            npm install
+            pm2 restart /home/root/digital-ocean-cicd/src/app.js
