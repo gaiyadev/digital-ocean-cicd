@@ -27,5 +27,6 @@ jobs:
             mkdir digital-ocean-cicd 
             cd digital-ocean-cicd 
             git clone https://github.com/gaiyadev/digital-ocean-cicd.git
+            cd digital-ocean-cicd 
             pm2 restart src/app.js
             echo 'Deployment successful to digital ocean' 
