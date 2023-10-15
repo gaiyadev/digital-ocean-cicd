@@ -35,6 +35,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
+
       - name: Deploy code to DigitalOcean
         run: |
-          ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && pm2 restart src/app.js' 
+          sudo ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && pm2 restart src/app.js' 
