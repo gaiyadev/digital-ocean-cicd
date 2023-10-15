@@ -16,7 +16,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd home/runner/work/digital-ocean-cicd/digital-ocean-cicd/digital-ocean-cicd
+          cd digital-ocean-cicd
           npm install
 
   deploy:
