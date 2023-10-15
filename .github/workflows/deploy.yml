@@ -17,8 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd digital-ocean-cicd
-          npm ci  # Use `npm ci` for consistent dependencies installation
-        working-directory: digital-ocean-cicd
+          npm install
 
   deploy:
     needs: build
@@ -39,6 +38,5 @@ jobs:
           script: |
             cd digital-ocean-cicd
             git pull origin main
-            npm ci 
+            npm install
             pm2 restart src/app.js
-
