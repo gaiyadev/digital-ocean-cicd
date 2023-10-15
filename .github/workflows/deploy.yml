@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           path: digital-ocean-cicd
 
@@ -28,5 +28,5 @@ jobs:
       - name: Install dependencies and restart application
         run: |
           npm install
-          npm start src/app.js
-        working-directory: /digital-ocean-cicd
+          pm2 start src/app.js
+        working-directory: digital-ocean-cicd
