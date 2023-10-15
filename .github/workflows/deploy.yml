@@ -10,9 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          path: digital-ocean-cicd
+        uses: actions/checkout@v3 
 
       - name: Install dependencies
         run: |
@@ -24,22 +22,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to DigitalOcean
-        uses: actions/github-script@v5
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        uses: appleboy/ssh-action@v1.0.0 
         with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           script: |
-            const { exec } = require('@actions/exec');
-            const { getOctokit } = require('@octokit/rest');
-
-            const octokit = getOctokit();
-
-            async function deploy() {
-              // SSH into the DigitalOcean server and deploy the code.
-              await exec('ssh -o "StrictHostKeyChecking=no" ${{ env.SERVER_USERNAME }}@${{ env.SERVER_IP }} \'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js\'');
-            }
-
-            // Run the deployment function.
-            await deploy();
+              cd /home/cd digital-ocean-cicd
+              git stash
+              git pull origin main
+              pm2 restart src/app.js
+    
+              
