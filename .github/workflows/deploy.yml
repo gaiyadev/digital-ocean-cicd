@@ -20,7 +20,7 @@ jobs:
             cd digital-ocean-cicd
             git pull origin main
           else
-            git clone https://github.com/gaiyadev/digital-ocean-cicd.git digital-ocean-cicd
+            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
             cd digital-ocean-cicd
           fi
         working-directory: digital-ocean-cicd
@@ -28,5 +28,5 @@ jobs:
       - name: Install dependencies and restart application
         run: |
           npm install
-          node src/app.js
+          pm2 src/app.js
         working-directory: digital-ocean-cicd
