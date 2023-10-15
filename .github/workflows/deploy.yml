@@ -10,21 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           path: digital-ocean-cicd
 
       - name: Install dependencies
         run: |
           cd digital-ocean-cicd
-          npm install
+          npm ci  # Use `npm ci` for consistent dependencies installation
+        working-directory: digital-ocean-cicd
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           path: digital-ocean-cicd
 
@@ -32,11 +33,12 @@ jobs:
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }} 
-          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
             cd digital-ocean-cicd
             git pull origin main
-            npm install
+            npm ci 
             pm2 restart src/app.js
+
