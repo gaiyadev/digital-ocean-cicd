@@ -37,4 +37,4 @@ jobs:
           port: 22
       - name: Deploy code to DigitalOcean
         run: |
-          ssh ${{ secrets.SERVER_USERNAME }}@${{ SERVER_IP.SSH_HOST }} 'cd digital-ocean-cicd && git pull origin main' 
+          ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && pm2 restart src/app.js' 
