@@ -1,23 +1,33 @@
 name: Build & Deploy
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy NodeJS app
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies and restart app
+        run: |
+          cd ${{github.workspace}}
+          npm install
+          pm2 restart src/app.js
+        env:
+          PM2_HOME: ${{github.workspace}}/.pm2
+
+      - name: SSH into the server and deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{secrets.SERVER_IP}} 
-          key: ${{secrets.SSH_PRIVATE_KEY}} 
-          username: ${{ secrets.SERVER_USERNAME }} 
-     
+          host: ${{secrets.SERVER_IP}}
+          username: ${{secrets.SERVER_USERNAME}}
+          key: ${{secrets.SSH_PRIVATE_KEY}}
           script: |
-            mkdir digital-ocean-cicd 
-            cd digital-ocean-cicd 
-            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
-            npm install
-            pm2 restart /digital-ocean-cicd/digital-ocean-cicd/src/app.js
-            echo 'Deployment successful to digital ocean' 
+            cd /path/to/your/remote/project/directory 
+            git pull origin main 
+            npm install # Install Node.js dependencies
+            pm2 restart src/app.js 
