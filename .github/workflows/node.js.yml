@@ -33,4 +33,3 @@ jobs:
             # Perform any necessary deployment steps
             git pull origin main
             npm install
-            pm2 restart app.js  # Assuming your entry file is app.js
