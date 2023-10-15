@@ -20,7 +20,7 @@ jobs:
             cd digital-ocean-cicd
             git pull origin main
           else
-            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
+            git clone https://github.com/gaiyadev/digital-ocean-cicd.git digital-ocean-cicd
             cd digital-ocean-cicd
         working-directory: digital-ocean-cicd
 
