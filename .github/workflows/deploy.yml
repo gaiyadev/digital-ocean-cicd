@@ -8,32 +8,30 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
-
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          
+      - run: npm ci
 
-    - name: Install doctl
-      uses: digitalocean/action-doctl@v2
-      with:
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-        
-    - name: Deploy to server
-      run: |
-        droplet_ip="${{  secrets.DROPLET_IP  }}"
-        droplet_username="${{ secrets.DROPLET_USERNAME  }}"
-        
-        # Deploy your application (replace the following line with your actual deployment commands)
-        ssh -o StrictHostKeyChecking=no $droplet_username@$droplet_ip 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          
+      - name: Deploy to server
+        run: |
+          droplet_ip="${{ secrets.DROPLET_IP }}"
+          droplet_username="${{ secrets.DROPLET_USERNAME }}"
+          
+          # Deploy your application (replace the following line with your actual deployment commands)
+          ssh -o StrictHostKeyChecking=no $droplet_username@$droplet_ip 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
