@@ -1,30 +1,21 @@
-name: CI/CD
-
+name: Build & Deploy
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: npm install
-
-      # - name: Build
-      #   run: npm run build
-
-      - name: Deploy
-        run: |
-         ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} << EOF
-            cd /path/to/your/application
-            git pull origin main
-            npm install
-            npm run build
-            pm2 restart app
-          EOF
+      - name: Deploy NodeJS app
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{secrets.SERVER_IP}} 
+          key: ${{secrets.SSH_PRIVATE_KEY}} 
+          username: ${{ secrets.SERVER_USERNAME }} 
+     
+          script: |
+            mkdir digital-ocean-cicd 
+            cd digital-ocean-cicd 
+            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
+            echo 'Deployment successful to digital ocean' 
