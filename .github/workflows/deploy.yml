@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }} 
           port: 22
           script: |
-                    git clone https://github.com/gaiyadev/digital-ocean-cicd.git
-                    cd digital-ocean-cicd
+                    git clone https://github.com/gaiyadev/digital-ocean-cicd.git cicd
+                    cd cicd
                     npm install
                     pm2 restart src/app.js
