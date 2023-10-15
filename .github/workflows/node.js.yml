@@ -24,7 +24,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /github/workspace
-            pwd
-            # Navigate into the correct directory if necessary (e.g., cd your-app-directory)
-            # Perform any other deployment steps here, such as git pull, npm install, and pm2 restart
+            # Navigate into the repository directory
+            cd digital-ocean-cicd
+            
+            # Assuming your entry file is in the src directory
+            cd src
+
+            # Perform any necessary deployment steps
+            git pull origin main
+            npm install
+            pm2 restart app.js  # Assuming your entry file is app.js
