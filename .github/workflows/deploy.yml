@@ -6,33 +6,37 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: digital-ocean-cicd
 
-      - name: Update repository or clone if not exists
+      - name: Install dependencies
         run: |
-          if [ -d "digital-ocean-cicd/.git" ]; then
+          cd digital-ocean-cicd
+          npm install
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          path: digital-ocean-cicd
+
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }} 
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          port: 22
+          script: |
             cd digital-ocean-cicd
             git pull origin main
-          else
-            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
-            cd digital-ocean-cicd
-          fi
-        working-directory: digital-ocean-cicd
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: digital-ocean-cicd
-
-      - name: Install pm2
-        run: npm install -g pm2
-        working-directory: digital-ocean-cicd
-
-      - name: Start application with pm2
-        run: pm2 start src/app.js
-        working-directory: digital-ocean-cicd
+            npm install
+            pm2 restart ./src/app.js
