@@ -30,8 +30,5 @@ jobs:
           
       - name: Deploy to server
         run: |
-          droplet_ip="${{ secrets.DROPLET_IP }}"
-          droplet_username="${{ secrets.DROPLET_USERNAME }}"
-          
-          # Deploy your application (replace the following line with your actual deployment commands)
-          ssh -o StrictHostKeyChecking=no $droplet_username@$droplet_ip 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd /path/to/your/app && git pull origin main && npm install && pm2 restart src/app.js'
+
