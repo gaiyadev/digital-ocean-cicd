@@ -28,7 +28,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-              cd /home/cd digital-ocean-cicd
+              cd /home/digital-ocean-cicd
               git stash
               git pull origin main
               pm2 restart src/app.js
