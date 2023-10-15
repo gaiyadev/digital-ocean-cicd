@@ -12,15 +12,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Print working directory and list files
+        run: |
+          pwd
+          ls -R
+        # Output the current working directory and list the files in the runner environment for debugging
+
       - name: Install dependencies and Deploy to DigitalOcean
         run: |
-         pwd
-         ls -R
-          # cd digital-ocean-cicd 
-          # git pull origin main        
-          # cd src  
-          # npm install
-          # pm2 restart app.js
+          cd /home/runner/work/digital-ocean-cicd/digital-ocean-cicd
+          cd src
+          npm install
+          pm2 restart app.js
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
