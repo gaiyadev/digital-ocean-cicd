@@ -2,13 +2,12 @@ name: Digital Ocean Node.js CICD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,32 +15,30 @@ jobs:
         node-version: [18.x]
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - run: npm ci
 
-    - name: Install doctl
-      uses: digitalocean/action-doctl@v2
-      with:
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-    - name: Deploy to server
-      run: |
-       droplet_ip="${{secrets.SERVER_IP  }}"
-       droplet_username="${{ secrets.SERVER_USERNAME }}"
-        
-       ssh $droplet_username@$droplet_ip 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-    # - name: Provision Droplet and deploy container
-    #   run: doctl compute droplet create "$GIT_TAG_NAME" --image docker-18-04 --size s-1vcpu-1gb --region nyc1 --user-data-file deploy.sh --wait
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Deploy to server
+        run: |
+          droplet_ip="${{secrets.SERVER_IP  }}"
+          droplet_username="${{ secrets.SERVER_USERNAME }}"
+           
+          ssh $droplet_username@$droplet_ip 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+        # - name: Provision Droplet and deploy container
+        #   run: doctl compute droplet create "$GIT_TAG_NAME" --image docker-18-04 --size s-1vcpu-1gb --region nyc1 --user-data-file deploy.sh --wait
 
-    # - name: Deploying to server
-    #   run: |
-    #     ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-    #   env:
-    #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
-
+        # - name: Deploying to server
+        #   run: |
+        #     ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
