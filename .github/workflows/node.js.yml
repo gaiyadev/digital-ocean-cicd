@@ -14,15 +14,12 @@ jobs:
 
       - name: Install dependencies and Deploy to DigitalOcean
         run: |
-          # Clone the repository into the current working directory
           git clone https://github.com/gaiyadev/digital-ocean-cicd.git backend
-
-          # Navigate into the cloned directory
           cd backend
 
           # Install dependencies and restart the application
           npm install
-          npx pm2 restart src/app.js  # Assuming you're using PM2 to manage your Node.js application
+          npx pm2 restart /src/app.js  # Assuming you're using PM2 to manage your Node.js application
 
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
