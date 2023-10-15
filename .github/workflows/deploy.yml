@@ -38,4 +38,4 @@ jobs:
 
       - name: Deploy code to DigitalOcean
         run: |
-          sudo ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && pm2 restart src/app.js' 
+          ssh -o "StrictHostKeyChecking no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && pm2 restart src/app.js' 
