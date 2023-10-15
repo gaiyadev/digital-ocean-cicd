@@ -28,7 +28,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /home/root/digital-ocean-cicd
             git stash
             git pull origin main
             npm install
