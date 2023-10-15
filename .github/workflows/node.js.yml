@@ -17,7 +17,7 @@ jobs:
     - name: Deploy to Main
       if: github.ref == 'refs/heads/main'
       run: |
-        ssh  ${{ secrets.SERVER_USERNAME }}@${{secrets.SERVER_IP}} "cd /path/to/main/app && git pull origin main && npm install && pm2 restart app.js"
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{secrets.SERVER_IP}} "cd /path/to/main/app && git pull origin main && npm install && pm2 restart app.js"
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
