@@ -1,35 +1,58 @@
-name: Digital Ocean Node.js CICD
+# name: Digital Ocean Node.js CICD
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         node-version: [18.x]
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Use Node.js ${{ matrix.node-version }}
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#           cache: 'npm'
+          
+#       - run: npm ci
+
+#       - name: Install doctl
+#         uses: digitalocean/action-doctl@v2
+#         with:
+#           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          
+#       - name: Deploy to server
+#         run: |
+#           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+# env:
+#   key: ${{ secrets.SSH_PRIVATE_KEY }}
+name: Continuous Deployment
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main 
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
+
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          
-      - run: npm ci
+    - name: Install Dependencies
+      run: npm install
 
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          
-      - name: Deploy to server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-env:
-  key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Deploy to server
+      run: |
+        ssh user@${{ secrets.SERVER_IP }} 'cd cd cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
