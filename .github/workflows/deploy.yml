@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: digital-ocean-cicd
 
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: digital-ocean-cicd
 
@@ -36,7 +36,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd home/runner/work/digital-ocean-cicd/digital-ocean-cicd/digital-ocean-cicd
+            cd /digital-ocean-cicd
             git pull origin main
             npm install
             pm2 restart src/app.js
