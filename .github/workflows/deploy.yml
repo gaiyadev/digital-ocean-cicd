@@ -1,4 +1,4 @@
-name: Digital Ocean Node.js CI/CD
+name: Deploy to Main
 
 on:
   push:
@@ -13,19 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Deploy to Main
+        run: |
+          # Add your deployment commands here
+          # For example, if you're deploying a Node.js app:
+          # npm install
+          # npm run build
+          # Your deployment command
 
-      - name: Deploy to DigitalOcean
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-              echo "Current directory: $(pwd)"
-            # cd /path/to/your/remote/project/directory
-            # git pull origin main
-            # npm install
-            # pm2 restart src/app.js
+      - name: Deploy to Digital Ocean Main Server
+        run: |
+            ssh ${{ secrets.SERVER_USERNAME }}@${{secrets.SERVER_IP}} "cd /digital-ocean-cicd && git pull origin main && pm2 restart src/app.js"
+
