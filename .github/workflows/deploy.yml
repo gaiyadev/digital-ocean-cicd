@@ -6,20 +6,16 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: |
-          npm install
+      - name: Install Dependencies
+        run: npm install
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -28,8 +24,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd ${{github.workspace}}
-            git stash
-            git pull origin main
-            npm install
-            pm2 restart src/app.js
+              echo "Current directory: $(pwd)"
+            # cd /path/to/your/remote/project/directory
+            # git pull origin main
+            # npm install
+            # pm2 restart src/app.js
