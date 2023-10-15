@@ -14,7 +14,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd digital-ocean-cicd
           npm install
 
   deploy:
