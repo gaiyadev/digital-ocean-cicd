@@ -16,13 +16,12 @@ jobs:
         run: |
           pwd
           ls -R
-        # Output the current working directory and list the files in the runner environment for debugging
 
       - name: Install dependencies and Deploy to DigitalOcean
         run: |
           cd /home/runner/work/digital-ocean-cicd/digital-ocean-cicd
-          cd src
           npm install
+          cd src
           pm2 restart app.js
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
