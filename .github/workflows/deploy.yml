@@ -39,4 +39,4 @@ jobs:
             cd digital-ocean-cicd
             git pull origin main
             npm install
-            pm2 restart ./src/app.js
+            pm2 restart src/app.js
