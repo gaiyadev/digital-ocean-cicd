@@ -29,7 +29,12 @@ jobs:
       uses: digitalocean/action-doctl@v2
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      
+    - name: Deploy to server
+      run: |
+       droplet_ip="${{secrets.SERVER_IP  }}"
+       droplet_username="${{ secrets.SERVER_USERNAME }}"
+        
+       ssh $droplet_username@$droplet_ip 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
     # - name: Provision Droplet and deploy container
     #   run: doctl compute droplet create "$GIT_TAG_NAME" --image docker-18-04 --size s-1vcpu-1gb --region nyc1 --user-data-file deploy.sh --wait
 
