@@ -1,58 +1,32 @@
-# name: Digital Ocean Node.js CICD
-
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-#         node-version: [18.x]
-#     steps:
-#       - uses: actions/checkout@v3
-
-#       - name: Use Node.js ${{ matrix.node-version }}
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: ${{ matrix.node-version }}
-#           cache: 'npm'
-          
-#       - run: npm ci
-
-#       - name: Install doctl
-#         uses: digitalocean/action-doctl@v2
-#         with:
-#           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          
-#       - name: Deploy to server
-#         run: |
-#           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-# env:
-#   key: ${{ secrets.SSH_PRIVATE_KEY }}
-name: Continuous Deployment
+name: Digital Ocean Node.js CI/CD
 
 on:
   push:
     branches:
-      - main 
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          path: digital-ocean-cicd
 
-    - name: Install Dependencies
-      run: npm install
+      - name: Update repository or clone if not exists
+        run: |
+          if [ -d "digital-ocean-cicd/.git" ]; then
+            cd digital-ocean-cicd
+            git pull origin main
+          else
+            git clone https://github.com/gaiyadev/digital-ocean-cicd.git
+            cd digital-ocean-cicd
+          fi
+        working-directory: digital-ocean-cicd
 
-    - name: Deploy to server
-      run: |
-        ssh -o StrictHostKeyChecking=no  ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd cd cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install dependencies and restart application
+        run: |
+          npm install
+          pm2 src/app.js
+        working-directory: digital-ocean-cicd
