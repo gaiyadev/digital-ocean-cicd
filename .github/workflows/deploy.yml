@@ -28,5 +28,5 @@ jobs:
       - name: Install dependencies and restart application
         run: |
           npm install
-          pm2 restart /src/app.js
+          pm2 restart src/app.js
         working-directory: digital-ocean-cicd
