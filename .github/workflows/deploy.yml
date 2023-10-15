@@ -14,7 +14,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd /digital-ocean-cicd
+          cd /home/root/digital-ocean-cicd
           npm install
 
   deploy:
@@ -29,10 +29,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /digital-ocean-cicd
+            cd /home/root/digital-ocean-cicd
             git stash
             git pull origin main
             npm install
-            pm2 restart /digital-ocean-cicd/src/app.js
-
-              
+            pm2 restart /home/root/digital-ocean-cicd/src/app.js
