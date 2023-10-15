@@ -1,35 +1,21 @@
-name: Digital Ocean Node.js CICD
-
+name: Build & Deploy
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Deploy NodeJS app
+        uses: appleboy/ssh-action@v0.1.2
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          
-      - run: npm ci
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          
-      - name: Deploy to server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-env:
-  key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{secrets.SERVER_IP}} 
+          key: ${{secrets.SSH_PRIVATE_KEY}} 
+          username: ${{ secrets.SERVER_USERNAME }}
+     
+          # script: |
+          #   mkdir test 
+          #   cd test 
+          #   git clone git@github.com:Mulubwa17/ci-cd-to-digitalocean-with-github-actions.git 
+          #   echo 'Deployment successful to digital ocean' 
