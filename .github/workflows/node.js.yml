@@ -1,29 +1,34 @@
-name: Deploy to DigitalOcean
+name: Digital Ocean Node.js CI/CD
 
 on:
   push:
     branches:
       - main
-      - dev
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Deploy to Main
-      if: github.ref == 'refs/heads/main'
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{secrets.SERVER_IP}} "cd /path/to/main/app && git pull origin main && npm install && pm2 restart app.js"
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install dependencies
+        run: |
+          npm install
 
-    - name: Deploy to Dev
-      if: github.ref == 'refs/heads/dev'
-      run: |
-        ssh user@dev-droplet-ip-address "cd /path/to/dev/app && git pull origin dev && npm install && pm2 restart app.js"
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          # script: |
+          #   git stash
+          #   git pull origin main
+          #   npm install
+          #   pm2 restart /home/root/digital-ocean-cicd/src/app.js
