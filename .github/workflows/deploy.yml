@@ -14,7 +14,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd /home/root/digital-ocean-cicd
           npm install
 
   deploy:
