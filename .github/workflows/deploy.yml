@@ -8,26 +8,39 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         node-version: [18.x]
-    steps:
-      - uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: npm ci
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
     steps:
-      - name: Deploying to server
-        run: |
-          ssh ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} 'cd digital-ocean-cicd && git pull origin main && npm install && pm2 restart src/app.js'
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        
+    - name: Get droplet IP and username
+      id: get_secrets
+      run: |
+        echo "::set-output name=ip::${{ secrets.DROPLET_IP }}"
+        echo "::set-output name=username::${{ secrets.DROPLET_USERNAME }}"
+      shell: bash
+        
+    - name: Deploy to server
+      run: |
+        droplet_ip="${{ steps.get_secrets.outputs.ip }}"
+        droplet_username="${{ steps.get_secrets.outputs.username }}"
+        
+        # Deploy your application (replace the following line with your actual deployment commands)
+        ssh -o StrictHostKeyChecking=no $droplet_username@$droplet_ip 'cd /path/to/your/app && git pull origin main && npm install && pm2 restart src/app.js'
